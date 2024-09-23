@@ -14,6 +14,15 @@ const sidebarMenuItems = [
         </Link>
       ),
     },
+    {
+      key: 'sub2',
+      icon: <MailOutlined />,
+      label: (
+        <Link href="/dashboard/user">
+          user
+        </Link>
+      ),
+    },
     // {
     //   key: 'sub2',
     //   icon: <AppstoreOutlined />,
