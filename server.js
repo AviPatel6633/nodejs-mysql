@@ -1,13 +1,25 @@
 const express = require('express');
 const app = express();
-const db = require('./db');
+// const db = require('./db');
 const routerList = require("./router/router");
 const bodyParser = require('body-parser');
+const cors = require('cors');
+
+// Enable CORS
+app.use(cors());
+
+// Allow only your Next.js app
+// app.use(cors({
+//     origin: 'http://localhost:3000', 
+// }));
+
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-    res.send('Hello Whatsapp!');
-});
+const LogFunction = (req, res, next) => {
+    console.log(`[${new Date().toLocaleString()}] Url accessed: ${req.originalUrl}`);
+    next(); 
+}
+app.use(LogFunction);
 
 app.use('/', routerList);
 

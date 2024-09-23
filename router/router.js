@@ -5,15 +5,15 @@ const menuControler =  require('../controller/menu');
 const userControler =  require('../controller/user');
 
 router.get('/', (req, res) => {
-    res.json({ message: 'Login successful', user: req.user });
+    res.send( 'Hello User, Welcome to Nodejs!');
 });
 
 // menu Routes
 router.post('/menu', menuControler.postMenuItem);
 router.get('/menu', menuControler.getAllMenuItems);
-router.get('/menu/:taste', menuControler.getMenuItemsByTaste);
-router.put('/menu/:id', menuControler.updateDataById); 
-router.delete('/menu/:id', menuControler.deleteDataById);
+router.get('/menu/?taste=:taste', menuControler.getMenuItemsByTaste);
+router.put('/menu/?id=:id', menuControler.updateDataById); 
+router.delete('/menu/?id=:id', menuControler.deleteDataById);
 
 // user Routes
 router.post('/user', userControler.postUser);

@@ -1,4 +1,3 @@
-// menuModel.js
 const db = require('./../db'); 
 
 // Function to create a menu item
