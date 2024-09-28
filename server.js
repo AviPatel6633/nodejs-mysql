@@ -5,7 +5,7 @@ const routerList = require("./router/router");
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const passport = require('./passport-setup');
+const passport = require('./helpers/passport-setup');
 const session = require('express-session');
 
 // Enable CORS
