@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 
-const menuController =  require('../controller/menu');
-const userController =  require('../controller/user');
+const menuController = require('../controller/menu');
+const userController = require('../controller/user');
 
 router.get('/', (req, res) => {
-    res.send( 'Hello User, Welcome to Nodejs!');
+    res.send('Hello User, Welcome to Nodejs!');
 });
 
 // Registration route
@@ -29,7 +29,7 @@ router.get('/user', userController.getUser);
 router.post('/menu', menuController.postMenuItem);
 router.get('/menu', menuController.getAllMenuItems);
 router.get('/menu/?taste=:taste', menuController.getMenuItemsByTaste);
-router.put('/menu/?id=:id', menuController.updateDataById); 
+router.put('/menu/?id=:id', menuController.updateDataById);
 router.delete('/menu/?id=:id', menuController.deleteDataById);
 
 module.exports = router;

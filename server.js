@@ -34,7 +34,7 @@ const LogFunction = (req, res, next) => {
 }
 app.use(LogFunction);
 
-app.use('/', routerList);
+app.use('/',passport.authenticate('local'), routerList);
 
 var port = process.env.PORT;
 
