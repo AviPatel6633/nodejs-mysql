@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
+const { jwtAuthMiddleware , generateToken} =require('./../helpers/jwt')
 
 const menuController = require('../controller/menu');
 const userController = require('../controller/user');
@@ -10,7 +11,7 @@ router.get('/', (req, res) => {
 });
 
 // Registration route
-router.post('/register', userController.postUser);
+router.post('/signup', userController.postUser);
 
 // Login route
 router.post('/login', userController.loginUser);
@@ -23,7 +24,7 @@ router.post('/login', userController.loginUser);
 router.post('/logout', userController.logoutUser);
 
 // Get all users route
-router.get('/user', userController.getUser);
+router.get('/user', jwtAuthMiddleware, userController.getUser);
 
 // menu Routes
 router.post('/menu', menuController.postMenuItem);

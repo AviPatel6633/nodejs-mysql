@@ -1,11 +1,22 @@
 const userModel = require('../model/userModel');
 const bcrypt = require('bcrypt');
+const { jwtAuthMiddleware , generateToken} =require('./../helpers/jwt')
 
 const postUser = async (req, res) => {
     try {
         const data = req.body;
         const response = await userModel.createUserModel(data);
-        res.status(201).json(response);
+
+        // create payload
+        const payload = {
+            id: response.id,
+            username: response.username
+        }
+        // crete token 
+        const token = generateToken(payload)
+        console.log(token, "token");
+
+        res.status(201).json({response:response, token:token});
     } catch (err) {
         console.error('Error saving user:', err.message);
         res.status(500).json({ error: 'Internal Server Error', details: err.message });
@@ -22,9 +33,34 @@ const getUser = async (req, res) => {
     }
 };
 
+
 const loginUser = async (req, res) => {
-    // The login logic is handled by Passport, but you can send a response here if needed
-    res.status(200).json({ message: 'Logged in successfully', user: req.user });
+    try {
+        const { username , password } = req.body;
+        const user = await userModel.findUserByUsername(username); 
+        
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        // Compare the password with the hashed password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        // Generate a token upon successful login
+        const payload={
+            id: user.id,
+            username: user.username
+        }
+        const token = generateToken(payload);
+        
+        res.status(200).json({ message: 'Logged in successfully', user, token });
+    } catch (err) {
+        console.error('Error during login:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 };
 
 const logoutUser = (req, res) => {
