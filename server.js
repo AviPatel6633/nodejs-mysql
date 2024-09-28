@@ -5,6 +5,9 @@ const routerList = require("./router/router");
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+const passport = require('./passport-setup');
+const session = require('express-session');
+
 // Enable CORS
 app.use(cors());
 
@@ -14,6 +17,16 @@ app.use(cors());
 // }));
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(session(
+    { 
+        secret: process.env.SESSION_SECRET, 
+        resave: false, 
+        saveUninitialized: true 
+    }
+));
+app.use(passport.initialize());
+app.use(passport.session());
 
 const LogFunction = (req, res, next) => {
     console.log(`[${new Date().toLocaleString()}] Url accessed: ${req.originalUrl}`);

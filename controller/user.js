@@ -1,31 +1,42 @@
-const userModel = require('../model/userModel'); 
+const userModel = require('../model/userModel');
+const bcrypt = require('bcrypt');
 
-// POST API to create a menu item
 const postUser = async (req, res) => {
     try {
         const data = req.body;
-        console.log(data);
         const response = await userModel.createUserModel(data);
-        console.log('Data saved');
-        res.status(200).json(response);
+        res.status(201).json(response);
     } catch (err) {
-        console.error('Error saving menu item:', err.message);
-        res.status(500).json({ error: 'Internal Server Error', details: err.message  });
+        console.error('Error saving user:', err.message);
+        res.status(500).json({ error: 'Internal Server Error', details: err.message });
     }
 };
 
-// GET API to retrieve all menu items
 const getUser = async (req, res) => {
     try {
-        const menuItems = await userModel.getUserModel();
-        res.status(200).json(menuItems);
+        const users = await userModel.getUserModel();
+        res.status(200).json(users);
     } catch (err) {
-        console.error('Error fetching menu items:', err);
+        console.error('Error fetching users:', err);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
+const loginUser = async (req, res) => {
+    // The login logic is handled by Passport, but you can send a response here if needed
+    res.status(200).json({ message: 'Logged in successfully', user: req.user });
+};
+
+const logoutUser = (req, res) => {
+    req.logout((err) => {
+        if (err) return next(err);
+        res.status(200).json({ message: 'Logged out successfully' });
+    });
+};
+
 module.exports = {
     postUser,
-    getUser
+    getUser,
+    loginUser,
+    logoutUser
 };

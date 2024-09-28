@@ -1,22 +1,34 @@
 const express = require('express');
 const router = express.Router();
+const passport = require('passport');
 
-const menuControler =  require('../controller/menu');
-const userControler =  require('../controller/user');
+const menuController =  require('../controller/menu');
+const userController =  require('../controller/user');
 
 router.get('/', (req, res) => {
     res.send( 'Hello User, Welcome to Nodejs!');
 });
 
-// menu Routes
-router.post('/menu', menuControler.postMenuItem);
-router.get('/menu', menuControler.getAllMenuItems);
-router.get('/menu/?taste=:taste', menuControler.getMenuItemsByTaste);
-router.put('/menu/?id=:id', menuControler.updateDataById); 
-router.delete('/menu/?id=:id', menuControler.deleteDataById);
+// Registration route
+router.post('/register', userController.postUser);
 
-// user Routes
-router.post('/user', userControler.postUser);
-router.get('/user', userControler.getUser);
+// Login route
+router.post('/login', passport.authenticate('local', { 
+    successRedirect: '/user', 
+    failureRedirect: '/login' 
+}), userController.loginUser);
+
+// Logout route
+router.post('/logout', userController.logoutUser);
+
+// Get all users route
+router.get('/user', userController.getUser);
+
+// menu Routes
+router.post('/menu', menuController.postMenuItem);
+router.get('/menu', menuController.getAllMenuItems);
+router.get('/menu/?taste=:taste', menuController.getMenuItemsByTaste);
+router.put('/menu/?id=:id', menuController.updateDataById); 
+router.delete('/menu/?id=:id', menuController.deleteDataById);
 
 module.exports = router;
