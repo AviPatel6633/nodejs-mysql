@@ -13,10 +13,11 @@ router.get('/', (req, res) => {
 router.post('/register', userController.postUser);
 
 // Login route
-router.post('/login', passport.authenticate('local', { 
-    successRedirect: '/user', 
-    failureRedirect: '/login' 
-}), userController.loginUser);
+router.post('/login', userController.loginUser);
+// router.post('/login', passport.authenticate('local', { 
+//     successRedirect: '/user', 
+//     failureRedirect: '/login' 
+// }), userController.loginUser);
 
 // Logout route
 router.post('/logout', userController.logoutUser);
