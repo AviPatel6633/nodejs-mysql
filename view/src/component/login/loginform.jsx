@@ -6,15 +6,27 @@ import Button from 'react-bootstrap/Button';
 import Link from 'next/link';
 import { useForm } from "react-hook-form"
 import { useRouter } from 'next/navigation'
+import axios from 'axios';
+
+const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL + "/login";
 
 const Loginform = () => {
+
     const router = useRouter()
     const { register, handleSubmit, formState: { errors },
     } = useForm()
 
     const onSubmit = (data) => {
         console.log(data);
-        router.push('/dashboard')
+        axios.post(baseUrl, data)
+            .then(function (response) {
+                console.log(response);
+                router.push('/dashboard')
+                localStorage.setItem('token', response.data.token);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
     const registerOptions = {
