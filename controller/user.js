@@ -1,6 +1,6 @@
 const userModel = require('../model/userModel');
 const bcrypt = require('bcrypt');
-const { jwtAuthMiddleware , generateToken} =require('./../helpers/jwt')
+const { jwtAuthMiddleware, generateToken } = require('./../helpers/jwt')
 
 const postUser = async (req, res) => {
     try {
@@ -14,9 +14,9 @@ const postUser = async (req, res) => {
         }
         // crete token 
         const token = generateToken(payload)
-        console.log(token, "token");
+        // console.log(token, "token");
 
-        res.status(201).json({response:response, token:token});
+        res.status(201).json({ response: response, token: token });
     } catch (err) {
         console.error('Error saving user:', err.message);
         res.status(500).json({ error: 'Internal Server Error', details: err.message });
@@ -36,9 +36,9 @@ const getUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
     try {
-        const { username , password } = req.body;
-        const user = await userModel.findUserByUsername(username); 
-        
+        const { username, password } = req.body;
+        const user = await userModel.findUserByUsername(username);
+
         if (!user) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
@@ -50,12 +50,19 @@ const loginUser = async (req, res) => {
         }
 
         // Generate a token upon successful login
-        const payload={
+        const payload = {
             id: user.id,
             username: user.username
         }
         const token = generateToken(payload);
-        
+
+        // Set the token as an HttpOnly cookie
+        res.cookie('auth_token', token, {
+            httpOnly: false,
+            secure: false,
+            sameSite: 'Strict',
+        });
+
         res.status(200).json({ message: 'Logged in successfully', user, token });
     } catch (err) {
         console.error('Error during login:', err);
@@ -64,10 +71,14 @@ const loginUser = async (req, res) => {
 };
 
 const logoutUser = (req, res) => {
-    req.logout((err) => {
-        if (err) return next(err);
-        res.status(200).json({ message: 'Logged out successfully' });
+
+    res.clearCookie('auth_token', {
+        httpOnly: false,
+        secure: false, // Don't use 'secure' in development (only for HTTPS)
+        sameSite: 'Strict',
     });
+
+    res.status(200).json({ message: 'Logged out successfully' });
 };
 
 module.exports = {
